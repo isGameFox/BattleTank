@@ -17,6 +17,11 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	float ReticleXLocation = 0.5f;
+	UPROPERTY(EditAnywhere)
+	float ReticleYLocation = 0.33333f;
 	
 private:
 	ATank* GetControlledTank() const;

@@ -29,14 +29,21 @@ void ATankPlayerController::AimTowardsCrosshair() {
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
-		//if hits
+		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - ReticleLocation: %s"), *(HitLocation.ToCompactString()))
 	}
 	
 }
 
 bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const{
-	OutHitLocation = FVector(1.0);
-	return false;
+	
+	//get location of the aim reticle
+	int32 ViewportSizeX, ViewportSizeY;
+	GetViewportSize(ViewportSizeX, ViewportSizeY);
+	FVector ReticleScreenLocation = FVector(ViewportSizeX*ReticleXLocation, ViewportSizeY*ReticleYLocation, 0.f);
+	//deproject the screen position of the reticle to a worl direction
+	//line trace along that position
+	OutHitLocation = ReticleScreenLocation;
+	return true;
 	/*
 		const FHitResult UGrabber::GetFirstPhysicsBodyInReach() {
 			SetPlayerViewpoint();
