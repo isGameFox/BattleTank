@@ -29,7 +29,6 @@ void ATankPlayerController::AimTowardsCrosshair() {
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - ReticleLocation: %s"), *(HitLocation.ToCompactString()))
 	}
 	
 }
@@ -39,10 +38,15 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 	//get location of the aim reticle
 	int32 ViewportSizeX, ViewportSizeY;
 	GetViewportSize(ViewportSizeX, ViewportSizeY);
-	FVector ReticleScreenLocation = FVector(ViewportSizeX*ReticleXLocation, ViewportSizeY*ReticleYLocation, 0.f);
-	//deproject the screen position of the reticle to a worl direction
+	FVector2D ReticleScreenLocation = FVector2D(ViewportSizeX*ReticleXLocation, ViewportSizeY*ReticleYLocation);
+	
+	FVector WorldDirection;
+	if (GetLookDirection(ReticleScreenLocation, WorldDirection)) {
+
+	}
+
 	//line trace along that position
-	OutHitLocation = ReticleScreenLocation;
+	OutHitLocation = FVector(1.0f);
 	return true;
 	/*
 		const FHitResult UGrabber::GetFirstPhysicsBodyInReach() {
@@ -68,4 +72,9 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 			GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerLocation, OUT PlayerRotation);
 		}
 	*/
+}
+
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const{
+	FVector WorldLocation;
+	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, WorldLocation, LookDirection);
 }
