@@ -17,8 +17,48 @@ void ATankPlayerController::BeginPlay() {
 
 void ATankPlayerController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	AimTowardsCrosshair();
 }
 
- ATank* ATankPlayerController::GetControlledTank() const{
+ATank* ATankPlayerController::GetControlledTank() const{
 	return Cast<ATank>(GetPawn());
+}
+
+void ATankPlayerController::AimTowardsCrosshair() {
+	if (!GetControlledTank()) { return; }
+
+	FVector HitLocation;
+	if (GetSightRayHitLocation(HitLocation)) {
+		//if hits
+	}
+	
+}
+
+bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const{
+	OutHitLocation = FVector(1.0);
+	return false;
+	/*
+		const FHitResult UGrabber::GetFirstPhysicsBodyInReach() {
+			SetPlayerViewpoint();
+
+			//setup query params
+			FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("")), false, GetOwner());
+			FVector LineTraceEnd = PlayerLocation + (PlayerRotation.Vector() * Reach);
+
+			//raycast to reach distance
+			FHitResult Hit;
+			GetWorld()->LineTraceSingleByObjectType(OUT Hit, PlayerLocation, LineTraceEnd, FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), TraceParams);
+
+			AActor* ActorHit = Hit.GetActor();
+			if (ActorHit) {
+				UE_LOG(LogTemp, Warning, TEXT("Grabber detects: %s"), *(ActorHit->GetName()));
+			}
+
+			return Hit;
+		}
+
+		void UGrabber::SetPlayerViewpoint() {
+			GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerLocation, OUT PlayerRotation);
+		}
+	*/
 }
