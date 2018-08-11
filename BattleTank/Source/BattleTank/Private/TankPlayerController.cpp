@@ -26,10 +26,7 @@ void ATankPlayerController::AimTowardsCrosshair() {
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
-		//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Hit At %s!"), *(HitLocation.ToCompactString()))
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Miss detected!"))
+		GetControlledTank()->AimAt(HitLocation);
 	}
 	
 }
@@ -67,7 +64,6 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector& HitLocation, FVect
 	FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("")), false, GetOwner());
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams)) {
 		HitLocation = Hit.Location;
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Hit At %f m away!"), Hit.Distance)
 		return true;
 	}
 	else {

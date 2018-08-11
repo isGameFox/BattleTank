@@ -8,11 +8,17 @@ void ATankAIController::BeginPlay() {
 	ATank* PlayerTank = nullptr;
 	PlayerTank = GetPlayerTank();
 
-	if (PlayerTank) {
-		UE_LOG(LogTemp, Warning, TEXT("TankAIController - Found PlayerTank: %s"), *(PlayerTank->GetName()))
-	} else {
+	if (!PlayerTank) {
 		UE_LOG(LogTemp, Warning, TEXT("TankAIController - PlayerTank Not Found!"))
 	}
+}
+
+void ATankAIController::Tick(float DeltaTime) {
+	ATank* ThisTank = GetControlledTank();
+	ATank* PlayerTank = GetPlayerTank();
+
+	if (!ThisTank || !PlayerTank) { return; }
+	ThisTank->AimAt(PlayerTank->GetActorLocation());
 }
 
 ATank* ATankAIController::GetControlledTank() const {
