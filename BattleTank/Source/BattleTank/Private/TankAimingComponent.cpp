@@ -36,15 +36,25 @@ void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet)
 	Barrel = BarrelToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation) const {
-	LogAiming(HitLocation);
-}
-
-void UTankAimingComponent::LogAiming(FVector HitLocation) const {
+void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) const {
 	auto TankName = GetName();
-	if (Barrel) {
-		auto BarrelLocation = Barrel->GetComponentLocation();
-		UE_LOG(LogTemp, Warning, TEXT("%s - Barrel: %s!"), *TankName, *(BarrelLocation.ToCompactString()))
+	if (!Barrel) {
+		return;
+	}
+	FVector OutLaunchVelocity;
+	FVector BarrelEnd = Barrel->GetSocketLocation(FName("BarrelEnd"));
+
+	if (UGameplayStatics::SuggestProjectileVelocity(
+			this,
+			OutLaunchVelocity,
+			BarrelEnd,
+			HitLocation,
+			LaunchSpeed,
+			false,
+			0.f,
+			0.f,
+			ESuggestProjVelocityTraceOption::DoNotTrace)) {
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		UE_LOG(LogTemp, Warning, TEXT("Aiming At %s"), *(AimDirection.ToCompactString()))
 	}
 }
-

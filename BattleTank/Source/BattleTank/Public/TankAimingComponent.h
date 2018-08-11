@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TankAimingComponent.generated.h"
 
 
@@ -17,8 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void LogAiming(FVector) const;
-	void AimAt(FVector) const;
+	void AimAt(FVector, float) const;
 	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
 
 protected:
