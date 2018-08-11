@@ -4,13 +4,10 @@
 
 void ATankPlayerController::BeginPlay() {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("TankPlayerController: Begin Play"))
 
 	ATank* PlayerTank = nullptr;
 	PlayerTank = GetControlledTank();
-	if (PlayerTank) {
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Tank: %s"), *(PlayerTank->GetName()))
-	} else {
+	if (!PlayerTank) {
 		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Tank Not Found!"))
 	}
 }
@@ -29,6 +26,10 @@ void ATankPlayerController::AimTowardsCrosshair() {
 
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
+		//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Hit At %s!"), *(HitLocation.ToCompactString()))
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Miss detected!"))
 	}
 	
 }
@@ -42,39 +43,34 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 	
 	FVector WorldDirection;
 	if (GetLookDirection(ReticleScreenLocation, WorldDirection)) {
-
+		if (GetLookVectorHitLocation(OutHitLocation, WorldDirection)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
-
-	//line trace along that position
-	OutHitLocation = FVector(1.0f);
-	return true;
-	/*
-		const FHitResult UGrabber::GetFirstPhysicsBodyInReach() {
-			SetPlayerViewpoint();
-
-			//setup query params
-			FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("")), false, GetOwner());
-			FVector LineTraceEnd = PlayerLocation + (PlayerRotation.Vector() * Reach);
-
-			//raycast to reach distance
-			FHitResult Hit;
-			GetWorld()->LineTraceSingleByObjectType(OUT Hit, PlayerLocation, LineTraceEnd, FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), TraceParams);
-
-			AActor* ActorHit = Hit.GetActor();
-			if (ActorHit) {
-				UE_LOG(LogTemp, Warning, TEXT("Grabber detects: %s"), *(ActorHit->GetName()));
-			}
-
-			return Hit;
-		}
-
-		void UGrabber::SetPlayerViewpoint() {
-			GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerLocation, OUT PlayerRotation);
-		}
-	*/
+	return false;
 }
 
 bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const{
 	FVector WorldLocation;
 	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, WorldLocation, LookDirection);
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector& HitLocation, FVector LookDirection) const{
+	FHitResult Hit;
+	FVector PlayerLocation;
+	FRotator PlayerRotation;
+
+	FVector Start = PlayerCameraManager->GetCameraLocation();
+	FVector End = Start + (LookDirection * LineTraceRange);
+	FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("")), false, GetOwner());
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams)) {
+		HitLocation = Hit.Location;
+		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController - Hit At %f m away!"), Hit.Distance)
+		return true;
+	}
+	else {
+		return false;
+	}
 }
