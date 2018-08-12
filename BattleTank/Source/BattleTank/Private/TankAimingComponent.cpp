@@ -21,6 +21,7 @@ void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) const {
 	auto TankName = GetName();
 	if (!Barrel) {
+		UE_LOG(LogTemp, Warning, TEXT("Aiming - No Barrel"))
 		return;
 	}
 	FVector OutLaunchVelocity;
@@ -48,5 +49,5 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) const{
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
-	Barrel->Elevate(5);
+	Barrel->Elevate(DeltaRotator.Pitch);
 }
