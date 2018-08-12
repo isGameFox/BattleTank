@@ -31,6 +31,9 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) const {
 		BarrelEnd,
 		HitLocation,
 		LaunchSpeed,
+		false,
+		0,
+		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace);
 
 	if (bHaveAimSolution) {
