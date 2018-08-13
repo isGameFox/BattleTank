@@ -23,7 +23,6 @@ public:
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 	void SetTurretReference(UTankTurret* TurretToSet);
 	void MoveBarrelTowards(FVector) const;
-	void RotateTurretTowards(FVector) const;
 
 protected:
 

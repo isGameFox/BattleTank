@@ -31,9 +31,15 @@ void ATank::AimAt(FVector HitLocation) {
 }
 
 void ATank::SetBarrelReference(UTankBarrel* BarrelToSet) {
+	if (!BarrelToSet) { return; }
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
 }
 
 void ATank::SetTurretReference(UTankTurret* TurretToSet) {
+	if (!TurretToSet) { return; }
 	TankAimingComponent->SetTurretReference(TurretToSet);
+}
+
+void ATank::Fire(){
+	UE_LOG(LogTemp, Log, TEXT("Fire"));
 }
