@@ -45,10 +45,12 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet) {
 
 void ATank::Fire(){
 	UE_LOG(LogTemp, Log, TEXT("Fire"));
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
 		ProjectileBlueprint,
 		Barrel->GetSocketLocation(FName("BarrelEnd")),
 		Barrel->GetSocketRotation(FName("BarrelEnd"))
 	);
-	UE_LOG(LogTemp, Log, TEXT("%s"), *projectile->GetActorLocation().ToCompactString())
+	UE_LOG(LogTemp, Log, TEXT("%s"), *Projectile->GetActorLocation().ToCompactString())
+
+	Projectile->LaunchProjectile(LaunchSpeed);
 }
